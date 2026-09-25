@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Signal Engine 2 — find the work that fits</title>
+  <desc id="desc">Animated particle field for a local job intelligence engine.</desc>
+  <style>
+    text{font-family:Arial,Helvetica,sans-serif}.dot{animation:drift 5s ease-in-out infinite alternate}.spark{animation:pulse 3s ease-in-out infinite}.travel{animation:travel 5s linear infinite}@keyframes drift{to{transform:translateY(-14px)}}@keyframes pulse{50%{opacity:.25}}@keyframes travel{to{stroke-dashoffset:-240}}@media(prefers-reduced-motion:reduce){.dot,.spark,.travel{animation:none}}
+  </style>
+  <rect width="1200" height="420" rx="20" fill="#0b1421"/>
+  <g fill="#94f5cc" opacity=".8">
+    <circle class="dot" cx="755" cy="170" r="3"/><circle class="dot" cx="790" cy="250" r="2"/><circle class="dot" cx="830" cy="125" r="2"/><circle class="dot" cx="870" cy="285" r="3"/><circle class="dot" cx="910" cy="190" r="2"/><circle class="dot" cx="950" cy="320" r="2"/><circle class="dot" cx="1000" cy="145" r="3"/><circle class="dot" cx="1060" cy="260" r="2"/><circle class="dot" cx="1110" cy="175" r="2"/>
+  </g>
+  <g fill="#5d8eff" opacity=".85"><circle class="dot" cx="780" cy="320" r="2"/><circle class="dot" cx="850" cy="220" r="2"/><circle class="dot" cx="900" cy="110" r="2"/><circle class="dot" cx="975" cy="240" r="2"/><circle class="dot" cx="1030" cy="190" r="2"/><circle class="dot" cx="1140" cy="290" r="2"/></g>
+  <path d="M48 64H76" stroke="#94f5cc" stroke-width="4"/><text x="90" y="70" fill="#94f5cc" font-size="16" letter-spacing="4">SIGNAL / ENGINE 02</text>
+  <text x="48" y="159" fill="#f0f5ff" font-size="62" font-weight="700">Find the work</text><text x="48" y="231" fill="#f0f5ff" font-size="62" font-weight="700">that fits.</text>
+  <text x="50" y="281" fill="#aebed3" font-size="20">Less noise. Clearer evidence. Your next move.</text><path d="M48 334H1152" stroke="#2b3b51"/>
+  <circle class="spark" cx="55" cy="372" r="4" fill="#94f5cc"/><text x="70" y="378" fill="#b9c8da" font-size="14">LOCAL FIRST</text><text x="280" y="378" fill="#b9c8da" font-size="14">EXPLAINABLE MATCHING</text><text x="570" y="378" fill="#b9c8da" font-size="14">HUMAN IN CONTROL</text><text x="1025" y="378" fill="#94f5cc" font-size="14">VERSION 2.0</text>
+</svg>

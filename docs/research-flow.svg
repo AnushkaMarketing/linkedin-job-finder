@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 230" role="img" aria-labelledby="title desc">
+  <title id="title">From experience to opportunity</title><desc id="desc">Four animated stages: profile, public sources, visible evidence, and next move.</desc>
+  <style>.travel{animation:travel 5s linear infinite}@keyframes travel{to{stroke-dashoffset:-240}}@media(prefers-reduced-motion:reduce){.travel{animation:none}}</style>
+  <rect width="1200" height="230" rx="16" fill="#0b1421"/><path d="M155 95H1045" stroke="#293e54" stroke-width="2"/><path class="travel" d="M155 95H1045" stroke="#94f5cc" stroke-width="2" stroke-dasharray="10 70"/>
+  <g fill="#14273b" stroke="#94f5cc"><circle cx="155" cy="95" r="25"/><circle cx="451" cy="95" r="25"/><circle cx="747" cy="95" r="25"/><circle cx="1043" cy="95" r="25"/></g>
+  <g fill="#94f5cc" font-family="Arial" font-size="18" text-anchor="middle"><text x="155" y="102">01</text><text x="451" y="102">02</text><text x="747" y="102">03</text><text x="1043" y="102">04</text></g>
+  <g fill="#f0f5ff" font-family="Arial" font-size="20" font-weight="700" text-anchor="middle"><text x="155" y="157">Your experience</text><text x="451" y="157">Public sources</text><text x="747" y="157">Visible evidence</text><text x="1043" y="157">Your next move</text></g>
+  <g fill="#aebed3" font-family="Arial" font-size="15" text-anchor="middle"><text x="155" y="187">Review your CV profile</text><text x="451" y="187">Collect configured listings</text><text x="747" y="187">Inspect fit and gaps</text><text x="1043" y="187">Save, compare, apply</text></g>
+</svg>
