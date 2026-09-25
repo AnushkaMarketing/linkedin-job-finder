@@ -2,9 +2,19 @@
 
 **Latest edition by [ansh2807](https://github.com/ansh2807)** · Forked from the [original public v1 by AnushkaMarketing](https://github.com/AnushkaMarketing/signal-job-intelligence/releases/tag/v1.0.0). See [release lineage](RELEASE-HISTORY.md).
 
+<p align="center"><img src="docs/signal-motion.svg" alt="Signal Engine 2 — find the work that fits" width="1200" /></p>
+
+<p align="center"><a href="https://github.com/AnushkaMarketing/signal-job-intelligence/actions/workflows/validate.yml"><img src="https://github.com/AnushkaMarketing/signal-job-intelligence/actions/workflows/validate.yml/badge.svg" alt="Build and tests" /></a> · <a href="https://github.com/AnushkaMarketing/signal-job-intelligence/releases">Releases</a> · <a href="ENGINE-V2.md">Inside the engine</a></p>
+
 A private research workbench built with React, TypeScript, FastAPI and encrypted SQLite. Upload a CV, review its extracted profile, configure permitted sources and inspect an explainable shortlist of up to 50 jobs.
 
+**Repository update:** v2 is now included in AnushkaMarketing’s original public repository. Ansh’s Engine 2 and motion commits remain in the shared history, so both contributors are visible through GitHub’s commit and contributor views.
+
 **Engine 2 upgrade:** responsive particle motion, required/optional/alternative reasoning, broader skill relationships, shortlist gap analysis and a trainable local preference model. See [ENGINE-V2.md](ENGINE-V2.md) for methods, data requirements and evaluation limits. The model starts untrained and activates only after sufficient explicit relevance labels. Priority now includes a bounded feedback adjustment and an explicit must-have evidence cap.
+
+<p align="center"><img src="docs/research-flow.svg" alt="Profile to public sources to evidence to shortlist" width="1200" /></p>
+
+The SVG artwork is self-contained and includes lightweight animation plus reduced-motion support. Pointer-reactive particles run in the app itself; GitHub README images cannot execute JavaScript.
 
 ![Signal interface](docs/interface.png)
 
