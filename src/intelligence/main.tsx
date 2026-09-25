@@ -186,8 +186,8 @@ function App() {
     return (
       <main className="boot">
         <div className="brand">
-          <span className="brand-mark">s</span>signal
-          <span className="tiny">/ job intelligence</span>
+          <span className="brand-mark">in</span>linkedin job finder
+          <span className="tiny">/ intelligent job research</span>
         </div>
         {error ? (
           <>
@@ -215,20 +215,20 @@ function App() {
         <a
           className="brand"
           href="#"
-          aria-label="Signal home"
+          aria-label="LinkedIn Job Finder home"
           onClick={(e) => {
             e.preventDefault();
             setTab("Research");
           }}
         >
-          <span className="brand-mark">s</span>signal
+          <span className="brand-mark">in</span>linkedin job finder
           <span className="beta">LOCAL</span>
         </a>
         <div className="workspace">
           <span className="avatar">{data.profile.name?.[0] || "Y"}</span>
           <div>
             <strong>{data.profile.name || "Your workspace"}</strong>
-            <small>Personal job intelligence</small>
+            <small>Personal opportunity radar</small>
           </div>
         </div>
         <span className="eyebrow nav-label">WORKSPACE</span>

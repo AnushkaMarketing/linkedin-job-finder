@@ -1,10 +1,10 @@
-# Signal — local job intelligence
+# LinkedIn Job Finder — intelligent job research
 
-**Latest edition by [ansh2807](https://github.com/ansh2807)** · Forked from the [original public v1 by AnushkaMarketing](https://github.com/AnushkaMarketing/signal-job-intelligence/releases/tag/v1.0.0). See [release lineage](RELEASE-HISTORY.md).
+**Latest edition by [ansh2807](https://github.com/ansh2807)** · Originally published by [AnushkaMarketing](https://github.com/AnushkaMarketing/linkedin-job-finder/releases/tag/v1.0.0). See [release lineage](RELEASE-HISTORY.md).
 
 <p align="center"><img src="docs/signal-motion.svg" alt="Signal Engine 2 — find the work that fits" width="1200" /></p>
 
-<p align="center"><a href="https://github.com/AnushkaMarketing/signal-job-intelligence/actions/workflows/validate.yml"><img src="https://github.com/AnushkaMarketing/signal-job-intelligence/actions/workflows/validate.yml/badge.svg" alt="Build and tests" /></a> · <a href="https://github.com/AnushkaMarketing/signal-job-intelligence/releases">Releases</a> · <a href="ENGINE-V2.md">Inside the engine</a></p>
+<p align="center"><a href="https://github.com/AnushkaMarketing/linkedin-job-finder/actions/workflows/validate.yml"><img src="https://github.com/AnushkaMarketing/linkedin-job-finder/actions/workflows/validate.yml/badge.svg" alt="Build and tests" /></a> · <a href="https://github.com/AnushkaMarketing/linkedin-job-finder/releases">Releases</a> · <a href="ENGINE-V2.md">Inside the engine</a></p>
 
 A private research workbench built with React, TypeScript, FastAPI and encrypted SQLite. Upload a CV, review its extracted profile, configure permitted sources and inspect an explainable shortlist of up to 50 jobs.
 
