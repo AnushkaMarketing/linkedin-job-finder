@@ -2,7 +2,7 @@
 
 **Latest edition by [ansh2807](https://github.com/ansh2807)** · Originally published by [AnushkaMarketing](https://github.com/AnushkaMarketing/linkedin-job-finder/releases/tag/v1.0.0). See [release lineage](RELEASE-HISTORY.md).
 
-<p align="center"><img src="docs/signal-motion.svg" alt="Signal Engine 2 — find the work that fits" width="1200" /></p>
+<p align="center"><img src="docs/particle-loop.gif" alt="Animated Signal Engine 2 particle field — find the work that fits" width="1200" /></p>
 
 <p align="center"><a href="https://github.com/AnushkaMarketing/linkedin-job-finder/actions/workflows/validate.yml"><img src="https://github.com/AnushkaMarketing/linkedin-job-finder/actions/workflows/validate.yml/badge.svg" alt="Build and tests" /></a> · <a href="https://github.com/AnushkaMarketing/linkedin-job-finder/releases">Releases</a> · <a href="ENGINE-V2.md">Inside the engine</a></p>
 
@@ -14,7 +14,7 @@ A private research workbench built with React, TypeScript, FastAPI and encrypted
 
 <p align="center"><img src="docs/research-flow.svg" alt="Profile to public sources to evidence to shortlist" width="1200" /></p>
 
-The SVG artwork is self-contained and includes lightweight animation plus reduced-motion support. Pointer-reactive particles run in the app itself; GitHub README images cannot execute JavaScript.
+The repository hero uses a real animated GIF so motion remains visible in GitHub’s image viewer. The companion [SVG artwork](docs/signal-motion.svg) is self-contained and includes reduced-motion support. Pointer-reactive particles run in the app itself; README images cannot execute JavaScript or respond to a pointer.
 
 ![Signal interface](docs/interface.png)
 
