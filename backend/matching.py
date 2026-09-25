@@ -2,6 +2,7 @@ import re
 from .models import Profile, Job, Preferences, Factor, RankedJob
 from .ontology import extract_skills, relation, role_similarity, seniority, norm, ROLE_FAMILIES, role_family
 from .geo import location_fit
+from .intelligence import skill_assessment, evidence_review
 
 WEIGHTS = {'Skills': 30, 'Experience': 16, 'Role': 16, 'Seniority': 7, 'Industry': 6, 'Education': 5, 'Certifications': 3, 'Trajectory': 9, 'Projects': 8}
 
@@ -52,15 +53,9 @@ def match_job(profile: Profile, job: Job, preferences: Preferences) -> RankedJob
     required = extract_skills('\n'.join(analysis['required']))
     preferred = extract_skills('\n'.join(analysis['preferred']))
     criteria = required or job.skills
-    strengths, gaps, related = [], [], []
-    values = []
-    for skill in criteria:
-        score, label, evidence = relation(profile.skills + profile.technical_skills + profile.soft_skills, skill)
-        values.append(score)
-        if score == 1: strengths.append(f'{skill}: exact skill match')
-        elif score: related.append(f'{skill}: {label.lower()} via {evidence}; not an exact match')
-        else: gaps.append(f'{skill}: not in profile')
-    factors = [Factor(name='Skills', score=round(sum(values)/len(values)*100,1) if values else None, weight=WEIGHTS['Skills'], explanation='Exact and transferable skill evidence; missing criteria are unscored')]
+    assessment = skill_assessment(job, profile)
+    strengths, gaps, related = assessment['strengths'], assessment['gaps'], assessment['related']
+    factors = [Factor(name='Skills', score=assessment['score'], weight=WEIGHTS['Skills'], explanation='Required groups carry 3x, mentioned 2x, preferred 1x weight. Explicit alternatives need one matching skill; negated requirements excluded.')]
     years = profile.experience_years
     exp = None
     if years is not None and job.experience_min is not None:
@@ -103,11 +98,18 @@ def match_job(profile: Profile, job: Job, preferences: Preferences) -> RankedJob
     if preferred: readiness.append('Preferred skills to review: ' + ', '.join(preferred))
     if project_fit and project_fit > 0: readiness.append('Include a real project example that demonstrates the matched technologies; distinguish project work from employment.')
     return RankedJob(job=job, cv_fit=cv, preference_fit=pref, priority=0, coverage=round(coverage * 100), distance_km=km, location_status=loc,
-        factors=factors + preference_factors, strengths=strengths, gaps=gaps, related=related, analysis=analysis, readiness=readiness)
+        factors=factors + preference_factors, strengths=strengths, gaps=gaps, related=related, analysis=analysis, readiness=readiness, intelligence=evidence_review(job, assessment, round(coverage*100)))
 
 
 def rank(results: list[RankedJob]) -> list[RankedJob]:
     for row in results:
         # Evidence coverage caps the confidence of high scores computed from sparse fields.
         row.priority = round((.65 * (row.cv_fit or 0) * (.5 + row.coverage / 200) + .2 * (row.preference_fit or 0) + .15 * row.verification.confidence * 100), 1)
+        required=row.intelligence.get('required_count',0)
+        missing=row.intelligence.get('required_missing',0)
+        # A high contextual score cannot hide a majority of unsubstantiated must-haves.
+        cap=55 if required and missing/required >= .5 else 100
+        row.intelligence['priority_cap']=cap
+        row.intelligence['priority_cap_reason']='At least half the explicit must-have groups lack profile evidence' if cap<100 else ''
+        row.priority=min(row.priority,cap)
     return sorted(results, key=lambda r: (-r.priority, -r.coverage, r.job.title, r.job.job_id))

@@ -2,6 +2,7 @@
 
 A private research workbench built with React, TypeScript, FastAPI and encrypted SQLite. Upload a CV, review its extracted profile, configure permitted sources and inspect an explainable shortlist of up to 50 jobs.
 
+**Engine 2 upgrade:** responsive particle motion, required/optional/alternative reasoning, broader skill relationships, shortlist gap analysis and a trainable local preference model. See [ENGINE-V2.md](ENGINE-V2.md) for methods, data requirements and evaluation limits. The model starts untrained and activates only after sufficient explicit relevance labels. Priority now includes a bounded feedback adjustment and an explicit must-have evidence cap.
 
 ![Signal interface](docs/interface.png)
 

@@ -24,9 +24,9 @@ import "@fontsource-variable/manrope";
 import { api } from "./api";
 import type { Bootstrap, Profile, Run, Ranked, JobState } from "./types";
 import "./styles.css";
-
-
-
+import "./studio.css";
+import { MotionHero } from "./MotionHero";
+import { IntelligencePanel } from "./IntelligencePanel";
 
 import { date, Tag, Link, Modal } from "./shared";
 import { PreferencesForm } from "./PreferencesForm";
@@ -324,7 +324,12 @@ function App() {
             </div>
           )}
           {tab === "Research" && (
-            <><div className="page-heading"><div><h1>Find the fit. See the evidence.</h1><p>A focused shortlist, grounded in your experience and your life.</p></div><button className="secondary" onClick={()=>setModal("import")}>Import a job</button></div>
+            <>
+              <MotionHero
+                profile={data.profile}
+                run={run}
+                onImport={() => setModal("import")}
+              />
               <section className="research-grid">
                 <div className="search-panel">
                   <div className="section-title">
@@ -350,7 +355,7 @@ function App() {
                   </small>
                 </div>
                 <div className="results-panel">
-                  
+                  <IntelligencePanel run={run} />
                   <div className="summary-strip">
                     <div>
                       <span>SHORTLIST</span>
@@ -696,7 +701,7 @@ function App() {
       </div>
       {selected && (
         <JobDetail
-          
+          searchId={run?.id || ""}
           row={selected}
           close={() => setSelected(null)}
           state={(s) => state(selected, s)}

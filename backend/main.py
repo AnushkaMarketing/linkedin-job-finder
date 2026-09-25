@@ -19,6 +19,8 @@ from .network import Network, SourceError
 from .normalize import normalize
 from .connectors import CompanyPages
 from .pipeline import Engine
+from .learning import profile_key, features, train
+from .models import RankedJob
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -173,6 +175,36 @@ def create_app(folder: Path | None = None):
 
     @app.post('/api/searches/{identifier}/cancel')
     async def cancel(identifier: str): await engine.cancel(identifier); return {'cancelled': True}
+
+    class FeedbackRequest(Model):
+        search_id: str
+        job_id: str
+        label: Literal['relevant', 'not_relevant']
+
+    @app.post('/api/feedback')
+    async def feedback(body: FeedbackRequest):
+        run = store.get('searches', body.search_id)
+        if not run or run.get('demo'): raise HTTPException(422, 'Training labels require a real research result; demo labels are excluded.')
+        current = Profile.model_validate(store.get('settings', 'profile', {}))
+        key = profile_key(current)
+        if run.get('profile_key') != key: raise HTTPException(422, 'Profile changed since this search. Run research again before teaching the engine.')
+        result = next((r for r in run['results'] if r['job']['job_id']==body.job_id),None)
+        if not result: raise HTTPException(404,'Job not found in this search')
+        store.put('feedback',key+':'+body.job_id,{'profile_key':key,'job_id':body.job_id,'label':body.label,'features':features(RankedJob.model_validate(result))})
+        return {'saved':True, 'note':'Used on your next search. Re-labelling replaces the previous vote.'}
+
+    @app.get('/api/learning')
+    async def learning():
+        key=profile_key(Profile.model_validate(store.get('settings','profile',{})))
+        model=train([x for x in store.items('feedback') if x['profile_key']==key])
+        return {k:v for k,v in model.items() if k!='weights'}
+
+    @app.delete('/api/learning')
+    async def reset_learning():
+        key=profile_key(Profile.model_validate(store.get('settings','profile',{})))
+        for label in store.items('feedback'):
+            if label['profile_key']==key:store.delete('feedback',key+':'+label['job_id'])
+        return {'reset':True}
 
     class PlaceRequest(Model): query: str
 

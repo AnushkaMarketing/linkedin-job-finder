@@ -10,6 +10,8 @@ from .geo import location_fit
 from .verification import verify_company, expired
 from .network import SourceError
 from .llm import CompatibleProvider
+from .intelligence import retrieve, shortlist_insights
+from .learning import profile_key, train, personalized_rank
 
 
 def demo_jobs() -> list[Job]:
@@ -53,7 +55,7 @@ class Engine:
         self.tasks = {}
         identifier = uuid4().hex
         snapshot = {'id': identifier, 'demo': demo, 'status': 'running', 'stage': 'Planning', 'started_at': now(), 'elapsed': 0,
-            'plan': search_plan(profile, prefs), 'preferences': prefs.model_dump(), 'sources': [], 'results': [],
+            'profile_key': profile_key(profile), 'plan': search_plan(profile, prefs), 'preferences': prefs.model_dump(), 'sources': [], 'results': [],
             'counts': {'discovered': 0, 'duplicates': 0, 'eligible': 0, 'checked': 0, 'llm_calls': 0, 'verified': 0}, 'exclusions': {}, 'warnings': [],
             'linkedin': linkedin_links(prefs.roles or profile.preferred_roles, prefs)}
         self.store.put('searches', identifier, snapshot)
@@ -108,8 +110,8 @@ class Engine:
                 await asyncio.gather(*(discover(c) for c in connectors))
             snapshot['counts']['discovered'] = len(jobs)
             if len(jobs) > 2500:
-                jobs = sorted(jobs, key=lambda j: max((role_similarity(j.title, r) for r in snapshot['plan']['roles']), default=0), reverse=True)[:2500]
-                snapshot['warnings'].append('Candidate pool limited to 2,500 by title relevance before detailed analysis.')
+                jobs = retrieve(jobs, profile, prefs, 2500)
+                snapshot['warnings'].append('Candidate pool limited to 2,500 by BM25 profile/title relevance before detailed analysis.')
             snapshot['stage'] = 'Normalizing and matching'; save()
             unique = deduplicate(jobs)
             snapshot['counts']['duplicates'] = len(jobs) - len(unique)
@@ -119,7 +121,11 @@ class Engine:
                 if reason: snapshot['exclusions'][reason] = snapshot['exclusions'].get(reason, 0) + 1
                 else: eligible.append(match_job(profile, job, prefs))
             snapshot['counts']['eligible'] = len(eligible)
-            results = rank(eligible)[:prefs.limit]
+            labels = [] if snapshot['demo'] else [x for x in self.store.items('feedback') if x['profile_key'] == snapshot['profile_key']]
+            model = train(labels)
+            snapshot['learning'] = {k:v for k,v in model.items() if k != 'weights'}
+            def rerank(rows): return personalized_rank(rank(rows), model)
+            results = rerank(eligible)[:prefs.limit]
             snapshot['stage'] = 'Checking listing evidence'; save()
             gate = asyncio.Semaphore(4)
             async def verify(row):
@@ -132,18 +138,19 @@ class Engine:
                     if state: row.job.state = state['state']
                     snapshot['counts']['checked'] += 1
                     if row.verification.status == 'Verified': snapshot['counts']['verified'] += 1
-                    snapshot['results'] = [r.model_dump() for r in rank(results)]; save()
+                    snapshot['results'] = [r.model_dump() for r in rerank(results)]; save()
             await asyncio.gather(*(verify(r) for r in results))
             config = LLMConfig.model_validate(self.store.get('settings', 'llm', {}))
             if config.enabled and config.consent and not snapshot['demo']:
                 snapshot['stage'] = 'Optional AI analysis'; save()
                 provider = CompatibleProvider(config)
-                for row in rank(results)[:3]:
+                for row in rerank(results)[:3]:
                     try:
                         snapshot['counts']['llm_calls'] += 1
                         row.llm_advice = await provider.analyze(profile, row.job)
                     except Exception: snapshot['warnings'].append('Optional AI unavailable or response failed evidence validation. Deterministic results retained.'); break
-            snapshot['results'] = [r.model_dump() for r in rank(results)]
+            snapshot['results'] = [r.model_dump() for r in rerank(results)]
+            snapshot['insights'] = shortlist_insights(results)
             snapshot['status'] = 'completed'; snapshot['stage'] = 'Research complete'
             if any(s['status'] != 'Complete' for s in snapshot['sources']): snapshot['warnings'].append('Search completed with partial source coverage. See individual source reports.')
             if not results: snapshot['warnings'].append('No eligible jobs were established by the configured sources. Review exclusions, add employer boards or import a listing.')

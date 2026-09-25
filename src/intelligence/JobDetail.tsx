@@ -1,4 +1,4 @@
-
+import { TeachEngine } from "./IntelligencePanel";
 
 import {
   Check,
@@ -15,14 +15,14 @@ export function JobDetail({
   state,
   busy,
   demo,
-
+  searchId,
 }: {
   row: Ranked;
   close: () => void;
   state: (s: JobState) => void;
   busy: boolean;
   demo: boolean;
-
+  searchId: string;
 }) {
   return (
     <Modal wide title="The evidence behind the match" close={close}>
@@ -67,6 +67,57 @@ export function JobDetail({
           <Link href={r.job.application_url}>Open application</Link>
         )}
       </div>
+      <TeachEngine row={r} searchId={searchId} demo={demo} />
+      {r.intelligence && (
+        <details className="detail-section" open>
+          <summary>
+            Requirement reasoning <CaretDown />
+          </summary>
+          <div className="requirement-grid">
+            {r.intelligence.requirements.map((g, i) => (
+              <div className="requirement-row" key={i}>
+                <div>
+                  <strong>
+                    {g.skills.join(g.operator === "any" ? " or " : ", ")}
+                  </strong>
+                  <small>
+                    {g.importance} ·{" "}
+                    {g.operator === "any"
+                      ? "one alternative needed"
+                      : "explicit skill"}{" "}
+                    · {g.relationship}
+                  </small>
+                </div>
+                <span className="requirement-value">{g.score}%</span>
+                <blockquote>{g.evidence}</blockquote>
+              </div>
+            ))}
+          </div>
+          {r.intelligence.flags.map((f) => (
+            <p className="warning-text" key={f}>
+              {f}
+            </p>
+          ))}
+          {r.intelligence.priority_cap_reason && (
+            <p className="warning-text">
+              Priority capped at {r.intelligence.priority_cap}:{" "}
+              {r.intelligence.priority_cap_reason}.
+            </p>
+          )}
+          <h3>Questions worth asking</h3>
+          <ul>
+            {r.intelligence.questions.map((q) => (
+              <li key={q}>{q}</li>
+            ))}
+          </ul>
+          <small>
+            Feedback adjustment:{" "}
+            {r.intelligence.priority_adjustment > 0 ? "+" : ""}
+            {r.intelligence.priority_adjustment} priority points.{" "}
+            {r.intelligence.feedback_labels || 0} eligible labels.
+          </small>
+        </details>
+      )}
       <div className="detail-grid">
         <section>
           <h3>Why it fits</h3>

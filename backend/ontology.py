@@ -56,6 +56,52 @@ ROLE_FAMILIES = {
     'data': ['Data Scientist', 'Data Analyst', 'Analytics Engineer'],
 }
 
+# Curated additions. These are explicit aliases, not a claim to reproduce ESCO.
+ALIASES.update({
+    'Content Marketing':['content marketing'], 'Performance Marketing':['performance marketing','paid acquisition'],
+    'Marketing Automation':['marketing automation'], 'HubSpot':['hubspot'], 'Salesforce':['salesforce'],
+    'Mailchimp':['mailchimp'], 'Klaviyo':['klaviyo'], 'CRM':['crm','customer relationship management'],
+    'A/B Testing':['a/b testing','split testing','ab testing'], 'Conversion Optimization':['cro','conversion rate optimization','conversion optimisation'],
+    'Google Tag Manager':['google tag manager','gtm'], 'Looker Studio':['looker studio','google data studio'],
+    'Semrush':['semrush'], 'Ahrefs':['ahrefs'], 'Technical SEO':['technical seo'], 'Local SEO':['local seo'],
+    'Influencer Marketing':['influencer marketing','creator partnerships'], 'Community Management':['community management'],
+    'Brand Strategy':['brand strategy','brand positioning'], 'Storytelling':['storytelling','brand storytelling'],
+    'Video Editing':['video editing'], 'Premiere Pro':['premiere pro','adobe premiere'], 'After Effects':['after effects'],
+    'CapCut':['capcut'], 'YouTube':['youtube'], 'TikTok':['tiktok'], 'Pinterest':['pinterest'],
+    'Shopify':['shopify'], 'E-commerce':['e-commerce','ecommerce'], 'Market Research':['market research'],
+    'Competitor Research':['competitor research','competitive analysis'], 'Lead Generation':['lead generation','lead gen'],
+    'Demand Generation':['demand generation','demand gen'], 'Product Marketing':['product marketing'],
+    'Java':['java'], 'Go':['golang','go programming'], 'Rust':['rust programming','rust'],
+    'PostgreSQL':['postgresql','postgres'], 'MongoDB':['mongodb'], 'Redis':['redis'],
+    'Next.js':['next.js','nextjs'], 'Vue':['vue','vue.js','vuejs'], 'Angular':['angular'],
+    'HTML':['html','html5'], 'CSS':['css','css3'], 'Tailwind CSS':['tailwind','tailwind css'],
+    'REST APIs':['rest api','restful apis','rest apis'], 'GraphQL':['graphql'],
+    'CI/CD':['ci/cd','continuous integration','continuous delivery'], 'Terraform':['terraform'],
+    'Pandas':['pandas'], 'NumPy':['numpy'], 'scikit-learn':['scikit-learn','sklearn'],
+    'RAG':['retrieval augmented generation','retrieval-augmented generation','rag'],
+    'LLMs':['large language models','llms','large language model'], 'LangChain':['langchain'],
+    'Tableau':['tableau'], 'Statistics':['statistics','statistical analysis'], 'Spark':['apache spark','pyspark'],
+    'Accessibility':['accessibility','wcag'], 'Prototyping':['prototyping'], 'Design Systems':['design systems'],
+})
+RELATED.update({
+    'Content Marketing':{'Content Strategy':.75,'Content Writing':.5,'SEO':.3},
+    'HubSpot':{'CRM':.85,'Marketing Automation':.65,'Email Marketing':.5},
+    'Salesforce':{'CRM':.85},'Mailchimp':{'Email Marketing':.8,'Marketing Automation':.45},
+    'Google Ads':{'Performance Marketing':.7,'Analytics':.4},'Meta Ads':{'Performance Marketing':.7,'Social Media':.45},
+    'Semrush':{'SEO':.6,'Competitor Research':.5},'Ahrefs':{'SEO':.6,'Competitor Research':.5},
+    'Technical SEO':{'SEO':.85},'Local SEO':{'SEO':.7},'Premiere Pro':{'Video Editing':.85},
+    'CapCut':{'Video Editing':.65,'Short-form Video':.5},'PostgreSQL':{'SQL':.85},
+    'Next.js':{'React':.75,'JavaScript':.45},'Pandas':{'Python':.45,'Analytics':.6},
+    'scikit-learn':{'Machine Learning':.8,'Python':.5},'RAG':{'LLMs':.6,'AI':.5},
+    'Figma':{'Prototyping':.7,'Design Systems':.4},
+})
+ROLE_FAMILIES['social'] += ['Social Media Manager','Community Manager','Social Media Strategist']
+ROLE_FAMILIES['content'] += ['Content Strategist','Content Marketing Manager','Content Marketer','Content Marketing Executive']
+ROLE_FAMILIES['marketing'] += ['Digital Marketing Manager','Marketing Manager','Growth Marketing Specialist']
+ROLE_FAMILIES['seo'] = ['SEO Executive','SEO Specialist','SEO Manager','Search Engine Optimization Specialist']
+ROLE_FAMILIES['performance'] = ['Performance Marketing Manager','Paid Media Specialist','PPC Specialist']
+
+
 def norm(text: str) -> str:
     return re.sub(r'[^a-z0-9]+', ' ', text.lower()).strip()
 
