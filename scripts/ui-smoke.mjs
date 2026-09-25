@@ -1,0 +1,81 @@
+import { createRequire } from 'node:module';
+import { spawn } from 'node:child_process';
+import { mkdir, mkdtemp } from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+
+const require = createRequire(import.meta.url);
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || '@playwright/test');
+const root = path.resolve(import.meta.dirname, '..');
+await mkdir(path.join(root, 'test-results'), { recursive: true });
+const data = await mkdtemp(path.join(root, 'test-results', 'ui-data-'));
+const python = process.env.SIGNAL_PYTHON || path.join(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+const server = spawn(python, ['-m', 'uvicorn', 'backend.main:create_app', '--factory', '--host', '127.0.0.1', '--port', '8766'], {
+  cwd: root, env: { ...process.env, JOB_INTEL_DATA: data }, windowsHide: true, stdio: ['ignore','pipe','pipe']
+});
+let output = ''; server.stderr.on('data', b=>{output += b.toString()});
+const url = 'http://127.0.0.1:8766';
+let browser;
+try {
+  for(let i=0;i<60;i++){try{if((await fetch(url+'/api/session')).ok)break}catch{} await new Promise(r=>setTimeout(r,250));}
+  browser = await chromium.launch({headless:true,channel:process.env.CHROME_CHANNEL || 'chrome'});
+  const page = await browser.newPage({viewport:{width:1440,height:1050},reducedMotion:'reduce'});
+  page.setDefaultTimeout(10000);
+  const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(url);
+  await page.getByRole('heading',{name:'Find the fit. See the evidence.'}).waitFor();
+  await page.screenshot({path:path.join(root,'test-results/dashboard-light.png'),fullPage:true});
+  const roles=page.getByLabel('Target roles');
+  await roles.pressSequentially('Social Media Manager, Content Strategist');
+  assert.equal(await roles.inputValue(),'Social Media Manager, Content Strategist');
+  await page.getByRole('button',{name:'Explore the demo'}).click();
+  await page.getByText('Research complete',{exact:true}).waitFor();
+  assert(await page.locator('.job-card').count()>=2);
+  await page.screenshot({path:path.join(root,'test-results/research-results.png'),fullPage:true});
+  await page.getByRole('button',{name:'View evidence'}).first().click();
+  const dialog=page.getByRole('dialog');
+  await dialog.getByRole('heading',{name:'The evidence behind the match'}).waitFor();
+  await dialog.getByRole('button',{name:'Save role',exact:true}).click();
+  await dialog.getByRole('button',{name:'Unsave',exact:true}).waitFor();
+  await page.screenshot({path:path.join(root,'test-results/job-evidence.png')});
+  await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Saved',exact:true}).click();
+  assert.equal(await page.locator('.job-card').count(),1);
+  await page.getByRole('button',{name:'My profile',exact:true}).click();
+  await page.getByLabel('CV text').fill('Test Candidate\nSocial Media Manager\n3 years experience\nSkills\nCopywriting, SEO, Content strategy, Social media marketing\nEducation\nBBA');
+  await page.getByRole('button',{name:'Extract profile',exact:true}).click();
+  await page.getByLabel('Name',{exact:true}).waitFor();
+  await page.waitForFunction(()=>document.querySelector('input[value="Test Candidate"]'));
+  await page.getByRole('button',{name:'Save profile',exact:true}).click();
+  await page.getByText('Profile saved on this device',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Research',exact:true}).click();
+  await page.getByRole('button',{name:'Import a job',exact:true}).click();
+  await page.getByLabel('Job title *').fill('Content Strategist');
+  await page.getByLabel('Company *',{exact:true}).fill('UI test company');
+  await page.getByLabel('Full description & requirements').fill('Required\nCopywriting; Content strategy; SEO\n3 years experience');
+  await page.getByRole('dialog').getByLabel('Work mode',{exact:true}).selectOption('remote');
+  await page.getByRole('button',{name:'Import listing',exact:true}).click();
+  await page.getByText('Listing imported. Start a new search to match and check it.',{exact:true}).waitFor();
+  await page.getByLabel('Target roles').fill('Content Strategist');
+  await page.getByLabel('Only confirmed offices in radius').uncheck();
+  await page.getByRole('checkbox',{name:'Remote',exact:true}).check();
+  await page.getByRole('button',{name:'Start research',exact:true}).click();
+  await page.getByText('Research complete',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Content Strategist',exact:true}).waitFor();
+  assert.equal(await page.locator('.job-card').count(),1);
+  assert.equal(await page.locator('.demo-banner').count(),0);
+  await page.getByRole('button',{name:'Toggle theme'}).click();
+  await page.screenshot({path:path.join(root,'test-results/dashboard-dark.png'),fullPage:true});
+  await page.setViewportSize({width:375,height:812});
+  await page.screenshot({path:path.join(root,'test-results/dashboard-mobile.png'),fullPage:true});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile overflow');
+  await page.getByRole('button',{name:'Toggle theme'}).click();
+  await page.getByRole('button',{name:'Settings',exact:true}).click();
+  await page.getByRole('button',{name:'Delete local data',exact:true}).click();
+  await page.getByRole('button',{name:'Delete all local data',exact:true}).click();
+  await page.getByText('Local workspace deleted',{exact:true}).waitFor();
+  assert.equal(await page.locator('.job-card').count(),0);
+  assert.deepEqual(errors,[]);
+  console.log('PASS: demo, typing, details, save, CV extraction, profile save, import, live local search, theme, mobile, deletion; no browser errors.');
+} catch(error){console.error(output.slice(-3000));throw error;}
+finally{if(browser)await browser.close();server.kill();}

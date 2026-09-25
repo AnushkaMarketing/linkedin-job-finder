@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tar
+test-results/
+.venv/
+.local/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
