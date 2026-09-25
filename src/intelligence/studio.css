@@ -152,6 +152,60 @@
   overflow: hidden;
   isolation: isolate;
 }
+.motion-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 22px;
+  background: radial-gradient(circle at 78% 45%, #cabfff42 0 11%, transparent 33%), radial-gradient(circle at 8% 10%, #9ee4dc2b, transparent 31%);
+}
+.motion-hero::before,
+.motion-hero::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border: 1px solid #8c78db38;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orbit-pulse 8s ease-in-out infinite;
+}
+.motion-hero::before { right: 4%; top: 2%; }
+.motion-hero::after { right: 13%; top: 16%; width: 145px; height: 145px; animation-delay: -3s; }
+.hero-copy h1 {
+  background: linear-gradient(115deg, var(--ink) 10%, #7665ce 55%, #3b8d91 90%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.career-map::before {
+  content: "";
+  position: absolute;
+  inset: 15% 8%;
+  border: 1px dashed #8c78db45;
+  border-radius: 50%;
+  transform: rotate(-12deg);
+  animation: map-spin 18s linear infinite;
+  pointer-events: none;
+}
+.career-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#6555d83d 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  opacity: .4;
+  pointer-events: none;
+}
+.map-node { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s; }
+.map-node:hover { border-color: #8c78db; box-shadow: 0 16px 34px #43386b20, 0 0 0 5px #8c78db12; }
+@keyframes orbit-pulse { 50% { transform: translate(-12px, 10px) scale(1.08); opacity: .45; } }
+@keyframes map-spin { to { transform: rotate(348deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .motion-hero::before, .motion-hero::after, .career-map::before { animation: none; }
+  .map-node { transition: none; }
+}
 .career-map canvas {
   position: absolute;
   inset: 0;
