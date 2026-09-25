@@ -1,5 +1,7 @@
 # Signal — local job intelligence
 
+**Latest edition by [ansh2807](https://github.com/ansh2807)** · Forked from the [original public v1 by AnushkaMarketing](https://github.com/AnushkaMarketing/signal-job-intelligence/releases/tag/v1.0.0). See [release lineage](RELEASE-HISTORY.md).
+
 A private research workbench built with React, TypeScript, FastAPI and encrypted SQLite. Upload a CV, review its extracted profile, configure permitted sources and inspect an explainable shortlist of up to 50 jobs.
 
 **Engine 2 upgrade:** responsive particle motion, required/optional/alternative reasoning, broader skill relationships, shortlist gap analysis and a trainable local preference model. See [ENGINE-V2.md](ENGINE-V2.md) for methods, data requirements and evaluation limits. The model starts untrained and activates only after sufficient explicit relevance labels. Priority now includes a bounded feedback adjustment and an explicit must-have evidence cap.
@@ -98,3 +100,4 @@ node scripts/ui-smoke.mjs
 Browser smoke coverage: initial dashboard, multi-role typing, demo pipeline, evidence dialog, saving, CV extraction/editing, manual job import, real local pipeline, theme switching, 375px layout and complete reset. Screenshots are in ignored `test-results/`. Use `CHROME_CHANNEL` to change the installed Chromium channel.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for extension boundaries. `JobSource` and `LLMProvider` are provider interfaces. Ranking, geography, verification and storage are independent services. Private historical shortlist data are excluded from this distribution.
+
